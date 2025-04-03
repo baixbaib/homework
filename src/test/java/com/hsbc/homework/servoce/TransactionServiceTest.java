@@ -8,7 +8,7 @@ import com.hsbc.homework.exception.ResourceNotFoundException;
 import com.hsbc.homework.repository.AccountRepository;
 import com.hsbc.homework.repository.TransactionRepository;
 import com.hsbc.homework.service.AccountService;
-import com.hsbc.homework.service.TransactionService;
+import com.hsbc.homework.service.impl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ class TransactionServiceTest {
     private AccountService accountService;
 
     @InjectMocks
-    private TransactionService transactionService;
+    private TransactionServiceImpl transactionService;
 
     @Test
     void createTransaction_Success() {

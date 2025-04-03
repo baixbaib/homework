@@ -4,7 +4,7 @@ import com.hsbc.homework.dto.AccountDTO;
 import com.hsbc.homework.entity.Account;
 import com.hsbc.homework.exception.ResourceNotFoundException;
 import com.hsbc.homework.repository.AccountRepository;
-import com.hsbc.homework.service.AccountService;
+import com.hsbc.homework.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +28,7 @@ class AccountServiceTest {
     private AccountRepository accountRepository;
 
     @InjectMocks
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
     @Test
     void createAccount_Success() {
