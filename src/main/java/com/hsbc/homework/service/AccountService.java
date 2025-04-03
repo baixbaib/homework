@@ -7,6 +7,7 @@ import com.hsbc.homework.exception.ResourceNotFoundException;
 import com.hsbc.homework.repository.AccountRepository;
 import com.hsbc.homework.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public class AccountService {
     private TransactionRepository transactionRepository;
 
     @Transactional
-    public Account createAccount(AccountDTO accountDTO) {
+    public synchronized Account createAccount(AccountDTO accountDTO) {
         boolean existedAccount = accountRepository.findByOwner(accountDTO.getOwner()).isPresent();
         if (existedAccount) {
             throw new ResourceExistedException("account has existed");
@@ -56,6 +57,7 @@ public class AccountService {
 
     // 删除账户
     @Transactional
+    @CacheEvict(value = "accounts", key = "#id")
     public void deleteAccount(Long id) {
         Account account = getAccountById(id);
         transactionRepository.deleteByFromAccountIdOrToAccountId(id, id);
