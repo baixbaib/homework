@@ -10,6 +10,13 @@
 
 通过通知等待机制实现的Allocator类一次性获取到要转入和转出的账户，并进行synchronized互斥锁定，从而继续进行交易动作。避免出现串行操作和死锁问题。
 
+# 异常处理
+- 对于前端传入的资源内容未找到，引发的ResourceNotFoundException的情况，响应Http 404，以及相应未找到资源的信息。
+
+- 对于参数校验不通过以及其他业务校验不通过引发的InsufficientBalanceException，MethodArgumentNotValidException异常的情况，响应Http 400，以及具体校验结果。
+
+- 对于其他异常，响应http 500。
+
 # pom.xml 文件详解
 
 - spring-boot-starter-data-jpa

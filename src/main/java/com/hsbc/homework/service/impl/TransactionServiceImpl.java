@@ -5,7 +5,6 @@ import com.hsbc.homework.entity.Account;
 import com.hsbc.homework.entity.Transaction;
 import com.hsbc.homework.exception.InsufficientBalanceException;
 import com.hsbc.homework.exception.ResourceNotFoundException;
-import com.hsbc.homework.repository.AccountRepository;
 import com.hsbc.homework.repository.TransactionRepository;
 import com.hsbc.homework.service.AccountService;
 import com.hsbc.homework.service.Allocator;
@@ -25,8 +24,7 @@ public class TransactionServiceImpl implements com.hsbc.homework.service.Transac
 
     @Autowired
     private TransactionRepository transactionRepository;
-    @Autowired
-    private AccountRepository accountRepository;
+
     @Autowired
     private AccountService accountService;
 
@@ -103,7 +101,7 @@ public class TransactionServiceImpl implements com.hsbc.homework.service.Transac
 
                 synchronized (toAccount) {
                     double diff = transactionDTO.getAmount() - originalRecord.getAmount();
-                    // 新交易金额比原始金额数量大，需查看转出账户余额是否充足
+                    // 新交易金额比原始金额数量大，转出账户需要继续转账，查看转出账户余额是否充足
                     if (diff > 0) {
                         if (fromAccount.getBalance().compareTo(diff) < 0) {
                             throw new InsufficientBalanceException("Insufficient balance in account: " + fromAccount.getId());
@@ -117,8 +115,8 @@ public class TransactionServiceImpl implements com.hsbc.homework.service.Transac
 
                     boolean fromAccountIsDeposit = diff > 0 ? false : true;
                     boolean toAccountIsDeposit = diff > 0 ? true : false;
-                    accountService.updateAccountBalance(fromAccount.getId(), Math.abs(diff), false);
-                    accountService.updateAccountBalance(toAccount.getId(), Math.abs(diff), true);
+                    accountService.updateAccountBalance(fromAccount.getId(), Math.abs(diff), fromAccountIsDeposit);
+                    accountService.updateAccountBalance(toAccount.getId(), Math.abs(diff), toAccountIsDeposit);
                     Transaction transaction = Transaction.builder().id(transactionDTO.getId()).fromAccount(fromAccount).toAccount(toAccount).amount(transactionDTO.getAmount()).build();
                     Transaction updatedTransaction = transactionRepository.save(transaction);
                     return updatedTransaction;
